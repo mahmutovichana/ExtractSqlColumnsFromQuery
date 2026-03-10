@@ -11,6 +11,8 @@ Modern .NET 10 Web API + Blazor test UI for extracting column names from raw SQL
 - Blazor live UI with SQL textarea + one-click copy outputs
 - Comprehensive test suite (complex + extreme + fuzz scenarios)
 
+<img width="2559" height="1391" alt="image" src="https://github.com/user-attachments/assets/a263c8c6-62cf-4191-bf81-27495e5d8b50" />
+
 ## Endpoints
 
 - API: `POST /api/sqlparser/extract-columns`
