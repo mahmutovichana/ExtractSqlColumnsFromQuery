@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractSqlColumnsFromQuery", "ExtractSqlColumnsFromQuery\ExtractSqlColumnsFromQuery.csproj", "{A421DA21-6622-410A-A012-D0FEF449F450}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractSqlColumnsFromQuery.Tests", "ExtractSqlColumnsFromQuery.Tests\ExtractSqlColumnsFromQuery.Tests.csproj", "{CF3856F7-930D-4A3B-BA9A-F8A54D9344F7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A421DA21-6622-410A-A012-D0FEF449F450}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A421DA21-6622-410A-A012-D0FEF449F450}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A421DA21-6622-410A-A012-D0FEF449F450}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A421DA21-6622-410A-A012-D0FEF449F450}.Debug|x64.Build.0 = Debug|Any CPU
+		{A421DA21-6622-410A-A012-D0FEF449F450}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A421DA21-6622-410A-A012-D0FEF449F450}.Debug|x86.Build.0 = Debug|Any CPU
+		{A421DA21-6622-410A-A012-D0FEF449F450}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A421DA21-6622-410A-A012-D0FEF449F450}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A421DA21-6622-410A-A012-D0FEF449F450}.Release|x64.ActiveCfg = Release|Any CPU
+		{A421DA21-6622-410A-A012-D0FEF449F450}.Release|x64.Build.0 = Release|Any CPU
+		{A421DA21-6622-410A-A012-D0FEF449F450}.Release|x86.ActiveCfg = Release|Any CPU
+		{A421DA21-6622-410A-A012-D0FEF449F450}.Release|x86.Build.0 = Release|Any CPU
+		{CF3856F7-930D-4A3B-BA9A-F8A54D9344F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF3856F7-930D-4A3B-BA9A-F8A54D9344F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF3856F7-930D-4A3B-BA9A-F8A54D9344F7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CF3856F7-930D-4A3B-BA9A-F8A54D9344F7}.Debug|x64.Build.0 = Debug|Any CPU
+		{CF3856F7-930D-4A3B-BA9A-F8A54D9344F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CF3856F7-930D-4A3B-BA9A-F8A54D9344F7}.Debug|x86.Build.0 = Debug|Any CPU
+		{CF3856F7-930D-4A3B-BA9A-F8A54D9344F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF3856F7-930D-4A3B-BA9A-F8A54D9344F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF3856F7-930D-4A3B-BA9A-F8A54D9344F7}.Release|x64.ActiveCfg = Release|Any CPU
+		{CF3856F7-930D-4A3B-BA9A-F8A54D9344F7}.Release|x64.Build.0 = Release|Any CPU
+		{CF3856F7-930D-4A3B-BA9A-F8A54D9344F7}.Release|x86.ActiveCfg = Release|Any CPU
+		{CF3856F7-930D-4A3B-BA9A-F8A54D9344F7}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

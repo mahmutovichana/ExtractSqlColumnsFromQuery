@@ -1,0 +1,199 @@
+@page "/"
+@using ExtractSqlColumnsFromQuery.Services
+@inject ISqlColumnExtractorService SqlService
+@inject IJSRuntime Js
+
+<main class="page-shell">
+    <header class="card card-header">
+        <div>
+            <h1>SQL Column Extractor</h1>
+            <p>Paste SQL directly from SSMS/ADS and extract column names without manual escaping.</p>
+        </div>
+        <div class="header-actions">
+            <a href="/swagger" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Open Swagger</a>
+            <button class="btn btn-primary" @onclick="LoadSampleQuery" disabled="@isLoading">Load Example</button>
+        </div>
+    </header>
+
+    <section class="bento-grid">
+        <article class="card card-editor">
+            <div class="card-title-row">
+                <h2>Input SQL</h2>
+                <div class="editor-actions">
+                    <button class="btn btn-primary" @onclick="ExtractColumns" disabled="@isLoading">
+                        @(isLoading ? "Extracting..." : "Extract")
+                    </button>
+                    <button class="btn btn-ghost" @onclick="Clear" disabled="@isLoading">Clear</button>
+                </div>
+            </div>
+
+            <textarea
+                id="sqlInput"
+                class="sql-textarea"
+                @bind="sqlQuery"
+                @bind:event="oninput"
+                placeholder="Paste SQL query here..."></textarea>
+
+            @if (!string.IsNullOrWhiteSpace(errorMessage))
+            {
+                <p class="status status-error">@errorMessage</p>
+            }
+            else if (!string.IsNullOrWhiteSpace(infoMessage))
+            {
+                <p class="status status-info">@infoMessage</p>
+            }
+        </article>
+
+        <article class="card card-help">
+            <h2>Quick Guide</h2>
+            <ul>
+                <li>Supports CTE, JOIN, subquery, window, JSON, XML, MERGE.</li>
+                <li>Works with multiline SQL exactly as copied from SQL tools.</li>
+                <li>Uses parser + safe fallback for mixed dialect fragments.</li>
+            </ul>
+            <div class="guide-note">
+                <strong>Best results:</strong>
+                <ul>
+                    <li>Paste the full query (including CTE headers).</li>
+                    <li>Use <em>Extract</em> after each edit to refresh output.</li>
+                    <li>Use <em>Copy as CSV</em> for quick export.</li>
+                </ul>
+            </div>
+            <div class="chip-row">
+                <span class="chip">T-SQL / SQL Server</span>
+                <span class="chip">Mixed dialect fallback</span>
+                <span class="chip">Deduplicated output</span>
+            </div>
+        </article>
+
+        <article class="card card-results">
+            <div class="card-title-row">
+                <h2>Columns (@columns.Count)</h2>
+            </div>
+
+            @if (columns.Count == 0 && hasExtracted)
+            {
+                <p class="status status-info">No columns detected for this input.</p>
+            }
+            else if (columns.Count > 0)
+            {
+                <div class="badges-wrap">
+                    @foreach (var column in columns)
+                    {
+                        <span class="column-badge">@column</span>
+                    }
+                </div>
+            }
+        </article>
+
+        <article class="card card-output">
+            <div class="output-block">
+                <div class="output-head">
+                    <h3>Copy as List</h3>
+                    <button class="btn btn-ghost" @onclick="CopyAsList" disabled="@(columns.Count == 0)">Copy</button>
+                </div>
+                <pre>@ListOutput</pre>
+            </div>
+
+            <div class="output-block">
+                <div class="output-head">
+                    <h3>Copy as CSV</h3>
+                    <button class="btn btn-ghost" @onclick="CopyAsCsv" disabled="@(columns.Count == 0)">Copy</button>
+                </div>
+                <pre>@CsvOutput</pre>
+            </div>
+        </article>
+    </section>
+</main>
+
+@code {
+    private const string DefaultSql = """
+WITH RECURSIVE mixed_dialect AS
+(
+    SELECT x.NodeId, x.ParentId, x.NodeLabel
+    FROM GraphNodes x
+)
+SELECT md.NodeId,
+       md.ParentId,
+       md.NodeLabel,
+       COALESCE(md.NodeLabel, 'N/A') AS EffectiveLabel,
+       CASE WHEN md.ParentId IS NULL THEN 0 ELSE 1 END AS HasParent
+FROM mixed_dialect md
+LIMIT 500;
+""";
+
+    private string sqlQuery = DefaultSql;
+    private List<string> columns = new();
+    private string errorMessage = string.Empty;
+    private string infoMessage = string.Empty;
+    private bool isLoading;
+    private bool hasExtracted;
+
+    private string ListOutput => columns.Count == 0 ? "(empty)" : string.Join(Environment.NewLine, columns);
+    private string CsvOutput => columns.Count == 0 ? "(empty)" : string.Join(", ", columns);
+
+    private Task CopyAsList() => CopyToClipboard(ListOutput, "Copied list output.");
+
+    private Task CopyAsCsv() => CopyToClipboard(CsvOutput, "Copied CSV output.");
+
+    private async Task ExtractColumns()
+    {
+        try
+        {
+            isLoading = true;
+            errorMessage = string.Empty;
+            infoMessage = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(sqlQuery))
+            {
+                errorMessage = "Enter SQL query first.";
+                columns = new();
+                hasExtracted = false;
+                return;
+            }
+
+            columns = SqlService.ExtractColumns(sqlQuery).ToList();
+            hasExtracted = true;
+            infoMessage = $"Extraction finished. Found {columns.Count} columns.";
+        }
+        catch (Exception ex)
+        {
+            columns = new();
+            hasExtracted = false;
+            errorMessage = $"Extraction failed: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void LoadSampleQuery()
+    {
+        sqlQuery = DefaultSql;
+        columns = new();
+        errorMessage = string.Empty;
+        infoMessage = "Sample SQL loaded.";
+        hasExtracted = false;
+    }
+
+    private void Clear()
+    {
+        sqlQuery = string.Empty;
+        columns = new();
+        errorMessage = string.Empty;
+        infoMessage = string.Empty;
+        hasExtracted = false;
+    }
+
+    private async Task CopyToClipboard(string value, string successMessage)
+    {
+        if (columns.Count == 0)
+        {
+            return;
+        }
+
+        var copied = await Js.InvokeAsync<bool>("sqlTestCopy.copyText", value);
+        infoMessage = copied ? successMessage : "Copy failed. Clipboard permission denied.";
+    }
+}
