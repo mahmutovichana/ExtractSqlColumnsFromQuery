@@ -1,0 +1,39 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+out/
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# Logs & temp
+*.log
+*.tmp
+*.temp
+
+# Test / coverage
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+.coverage/
+
+# NuGet
+*.nupkg
+packages/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local settings override (optional)
+appsettings.Local.json
